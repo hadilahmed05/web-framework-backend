@@ -7,9 +7,15 @@ import { CaseModule } from './case/case.module';
 import { ClientAuthModule } from './client-auth/client-auth.module';
 import { LawyerAuthModule } from './lawyer-auth/lawyer-auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'files'), // The 'public' directory where your files will be served from
+      serveRoot: '/files', // The virtual path prefix
+    }),
     ClientModule,
     LawyerModule,
     AppointmentModule,
@@ -22,9 +28,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: 3306,
       username: 'root',
       password: '',
-      database: 'WebFrameWorkDB',
+      database: 'webframeworkdb',
       autoLoadEntities: true,
-      synchronize: true,
     }),
   ],
   controllers: [AppController],
