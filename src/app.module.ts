@@ -24,12 +24,13 @@ import { join } from 'path';
     LawyerAuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '10.0.123.37',
       port: 3306,
       username: 'root',
       password: '',
       database: 'webframeworkdb',
       autoLoadEntities: true,
+      synchronize: true, // Add this line
     }),
   ],
   controllers: [AppController],
