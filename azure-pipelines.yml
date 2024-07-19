@@ -1,7 +1,11 @@
 # Docker
 # Build a Docker image
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+trigger:
+- main
 
+pool:
+  name: Default
 variables:
   nodeVersion: '14.x'  # Using a modern Node.js version
   backendImageNameTag: 'hakiBackend'
