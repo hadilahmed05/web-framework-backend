@@ -6,6 +6,7 @@ trigger:
 
 pool:
   name: Default
+
 variables:
   nodeVersion: '14.x'  # Using a modern Node.js version
   backendImageNameTag: 'hakiBackend'
