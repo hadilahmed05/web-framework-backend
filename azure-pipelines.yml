@@ -1,0 +1,22 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+pool:
+  name: Default
+
+variables:
+  nodeVersion: '14.x'  # Using a modern Node.js version
+
+steps:
+- task: UseNode@1
+  inputs:
+    version: '$(nodeVersion)'
+  displayName: 'Use Node.js $(nodeVersion)'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'Install dependencies and build'
