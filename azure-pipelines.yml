@@ -6,11 +6,25 @@ trigger:
 
 pool:
   name: Default
-
 variables:
   nodeVersion: '14.x'  # Using a modern Node.js version
-
 steps:
+- checkout: self
+  fetchDepth: 0
+  # Set JAVA_HOME to Java 17
+- script: |
+    echo "##vso[task.setvariable variable=JAVA_HOME]$(/usr/lib/jvm/java-17-openjdk-amd64)"
+    echo "##vso[task.setvariable variable=PATH]$JAVA_HOME/bin:$PATH"
+  displayName: 'Set JAVA_HOME to Java 17'
+- task: SonarCloudPrepare@2
+  inputs:
+    SonarCloud: 'sonarCloud_connection'
+    organization: 'hadilahmed7240120'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'hadilahmed7240120_hakiBackend_pipeline'
+    cliProjectName: 'hakiBackend_pipeline'
+    cliSources: '.'
 - task: UseNode@1
   inputs:
     version: '$(nodeVersion)'
@@ -20,3 +34,6 @@ steps:
     npm install
     npm run build
   displayName: 'Install dependencies and build'
+- task: SonarCloudAnalyze@2
+  inputs:
+    jdkversion: 'JAVA_HOME_17_X64'
