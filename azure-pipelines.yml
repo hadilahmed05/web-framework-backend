@@ -6,34 +6,30 @@ trigger:
 
 pool:
   name: Default
-variables:
-  nodeVersion: '14.x'  # Using a modern Node.js version
-steps:
-- checkout: self
-  fetchDepth: 0
-  # Set JAVA_HOME to Java 17
-- script: |
-    echo "##vso[task.setvariable variable=JAVA_HOME]$(/usr/lib/jvm/java-17-openjdk-amd64)"
-    echo "##vso[task.setvariable variable=PATH]$JAVA_HOME/bin:$PATH"
-  displayName: 'Set JAVA_HOME to Java 17'
-- task: SonarCloudPrepare@2
-  inputs:
-    SonarCloud: 'sonarCloud_connection'
-    organization: 'hadilahmed7240120'
-    scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: 'hadilahmed7240120_hakiBackend_pipeline'
-    cliProjectName: 'hakiBackend_pipeline'
-    cliSources: '.'
-- task: UseNode@1
-  inputs:
-    version: '$(nodeVersion)'
-  displayName: 'Use Node.js $(nodeVersion)'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'Install dependencies and build'
-- task: SonarCloudAnalyze@2
+steps:
+- task: CmdLine@2
+  displayName: 'DOWNLOAD AND INSTALL AQUASEC TRIVY'
   inputs:
-    jdkversion: 'JAVA_HOME_17_X64'
+    script: |
+      sudo apt-get install wget apt-transport-https gnupg lsb-release
+      wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+      echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+      sudo apt-get update
+      sudo apt-get install trivy
+      trivy -v
+      pwd
+- task: CmdLine@2
+  inputs:
+    script: |
+      trivy image --format table \
+                    --output trivy-image-backend-report.html \
+                    hadil0505/haki_app:back_final
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Trivy Report'
+  inputs:
+    targetPath: '/home/hadil/Desktop/myagent/_work/1/s/trivy-image-backend-report.html'
+    artifactName: 'trivy-reports'
+    publishLocation: 'pipeline'
+
