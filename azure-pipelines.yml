@@ -9,18 +9,14 @@ pool:
 
 variables:
   nodeVersion: '14.x'  # Using a modern Node.js version
-  backendImageNameTag: 'hakiBackend'
-  dockerHubRepository: 'hadil0505/haki_app'
-  dockerHubImageName: 'web-framework-backend'
 
 steps:
-
-
-- task: Docker@2
-  displayName: 'Build Backend Docker Image'
+- task: UseNode@1
   inputs:
-    containerRegistry: 'dockerHub_connection'
-    repository: '$(dockerHubRepository)'
-    Dockerfile: '**/Dockerfile'  # Path to your Dockerfile
-    tags: |
-      $(backendImageNameTag)
+    version: '$(nodeVersion)'
+  displayName: 'Use Node.js $(nodeVersion)'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'Install dependencies and build'
