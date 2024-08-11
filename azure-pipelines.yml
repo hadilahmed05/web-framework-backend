@@ -29,16 +29,9 @@ steps:
       pwd
       ls -al # List files to verify the report is created
 
-- task: CmdLine@2
-  displayName: 'Move Trivy Report to the Pipeline Workspace'
-  inputs:
-    script: |
-      mv trivy-image-report.html $(System.DefaultWorkingDirectory)/trivy-image-report.html
-
 - task: PublishPipelineArtifact@1
   displayName: 'Publish Trivy Report'
   inputs:
     targetPath: '$(System.DefaultWorkingDirectory)/trivy-image-report.html'
     artifactName: 'trivy-reports'
     publishLocation: 'pipeline'
-
