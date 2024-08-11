@@ -23,13 +23,13 @@ steps:
   inputs:
     script: |
       trivy image --format table \
-                    --output trivy-image-backend-report.html \
+                    --output trivy-image-report.html \
                     hadil0505/haki_app:back_final
 
 - task: PublishPipelineArtifact@1
   displayName: 'Publish Trivy Report'
   inputs:
-    targetPath: '/home/hadil/Desktop/myagent/_work/1/s/trivy-image-backend-report.html'
+    targetPath: '/home/hadil/Desktop/myagent/_work/1/s/trivy-backend-report.html'
     artifactName: 'trivy-reports'
     publishLocation: 'pipeline'
 
